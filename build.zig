@@ -2,7 +2,7 @@ const std = @import("std");
 const Builder = std.Build;
 
 pub fn build(b: *std.Build) !void {
-    const uno = std.zig.CrossTarget{
+    const uno = std.Target.Query{
         .cpu_arch = .avr,
         .cpu_model = .{ .explicit = &std.Target.avr.cpu.atmega328p },
         .os_tag = .freestanding,
