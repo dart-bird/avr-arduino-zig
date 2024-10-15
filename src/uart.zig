@@ -27,3 +27,24 @@ pub fn write_ch(ch: u8) void {
 
     regs.USART0.UDR0.* = ch;
 }
+pub fn format_int(val: u16, buffer: []u8) []u8 {
+    // A simple function to convert an integer to a string.
+    var i: usize = buffer.len;
+
+    var temp = val;
+
+    // Handle 0 case
+    if (temp == 0) {
+        buffer[0] = '0';
+        return buffer[0..1];
+    }
+
+    // Extract digits from the end
+    while (temp > 0 and i > 0) : (i -= 1) {
+        buffer[i] = '0' + @as(u8, @intCast(temp % 10));
+        temp /= 10;
+    }
+
+    // Return the slice with the valid characters
+    return buffer[i..];
+}

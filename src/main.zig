@@ -1,6 +1,6 @@
 const uart = @import("uart.zig");
 const gpio = @import("gpio.zig");
-
+const regs = @import("atmega328p.zig").registers;
 // This is put in the data section
 var ch: u8 = '!';
 
@@ -24,14 +24,14 @@ pub fn main() void {
 
     bss_stuff = "\r\nhello\r\n".*;
     uart.write(&bss_stuff);
+    gpio.digitalInit(13, .out);
+    gpio.analogInit(0);
 
-    // This will actually call our panic handler in start.zig when
-    // uncommented.
-    // var x: u8 = 255;
-    // x += 1;
-
-    gpio.init(5, .out);
-
+    while (true) {
+        if (1 < gpio.read()) {
+            uart.write("read analog data!!\r\n");
+        }
+    }
     while (true) {
         uart.write_ch(ch);
         if (ch < '~') {
@@ -40,8 +40,7 @@ pub fn main() void {
             ch = '!';
             uart.write("\r\n");
         }
-
-        gpio.toggle(5);
+        gpio.digitalToggle(13);
         delay_cycles(50000);
     }
 }
